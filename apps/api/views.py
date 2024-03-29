@@ -5,9 +5,10 @@ from rest_framework.permissions import (
     BasePermission,
     IsAuthenticatedOrReadOnly,
     IsAuthenticated,
+    IsAdminUser,
 )
 from apps.api.models import Snippet
-from apps.api.permissions import IsSnippetOwnerOrReadOnly
+from apps.api.permissions import IsSameUserOrAdmin, IsSnippetOwnerOrReadOnly
 from apps.api.serializers import SnippetSerializer, UserSerializer
 
 
@@ -29,9 +30,10 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 class UserList(generics.ListAPIView):
     queryset: BaseManager = User.objects.all()
     serializer_class: type[UserSerializer] = UserSerializer
+    permission_classes: list[type[BasePermission]] = [IsAdminUser]
 
 
 class UserDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset: BaseManager = User.objects.all()
     serializer_class: type[UserSerializer] = UserSerializer
-    permission_classes: list[type[BasePermission]] = [IsAuthenticated]
+    permission_classes: list[type[BasePermission]] = [IsSameUserOrAdmin]
