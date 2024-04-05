@@ -20,8 +20,11 @@ class SnippetSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    snippets = SnippetSerializer(many=True)
+    snippet_count = serializers.SerializerMethodField()
+
+    def get_snippet_count(self, obj: User) -> int:
+        return obj.snippets.count()
 
     class Meta:
         model: type[User] = User
-        fields: list[str] = ["id", "username", "snippets"]
+        exclude: list[str] = []
